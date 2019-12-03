@@ -1,0 +1,31 @@
+[server]
+  host="example.com" # websocket port
+  port="8090"
+  path="/v2/websocket"
+  scheme="ws"
+[[routers]]
+  upstream="http://0.0.0.0:8084"
+  path="^/$"
+[[routers]]
+  upstream="http://0.0.0.0:8084"
+  path="^/static-website"
+[[routers]]
+  upstream="http://0.0.0.0:8082"
+  path="^/antman"
+[[routers]]
+  upstream="http://0.0.0.0:8082"
+  path="^/static"
+[[routers]]
+  upstream="http://0.0.0.0:8080"
+  # copy_stream="http://10.0.17.6:8080"
+  path="^/api"
+  strip=4
+[[routers]]
+  upstream="http://0.0.0.0:8080"
+  path="^/v1"
+[[routers]]
+  upstream="http://0.0.0.0:8080"
+  path="^/pay/test"
+[[routers]]
+  upstream="http://0.0.0.0:8084"
+  path=".*"
