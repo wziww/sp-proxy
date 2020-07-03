@@ -1,5 +1,3 @@
-// +build ignore
-
 package main
 
 import (
@@ -64,6 +62,9 @@ func connect(u url.URL) {
 				dec.Decode(reqData)
 				client := &http.Client{
 					Timeout: 50 * time.Second,
+					CheckRedirect: func(req *http.Request, via []*http.Request) error {
+						return http.ErrUseLastResponse
+					},
 				}
 				URL := reqData.URL
 				for _, v := range C.Routers {
@@ -106,6 +107,12 @@ func connect(u url.URL) {
 				}
 				for k, v := range reqData.Header {
 					req.Header.Set(k, v)
+				}
+				if v := reqData.Header["X-Forwarded-Host"]; v != "" {
+					req.Host = v
+				}
+				for k, v := range req.Header {
+					fmt.Println(k, v)
 				}
 				res, err := client.Do(req)
 				if err != nil {
