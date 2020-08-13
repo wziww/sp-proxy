@@ -135,8 +135,14 @@ func ws(w http.ResponseWriter, r *http.Request) {
 		buf := bytes.NewBuffer(resData)
 		dec := gob.NewDecoder(buf)
 		dec.Decode(reqData)
-		if chanpool[reqData.Key] != nil {
+		chanpoolLock.RLock()
+		v := chanpool[reqData.Key]
+		chanpoolLock.RUnlock()
+		if v != nil {
+			chanpoolLock.Lock()
 			chanpool[reqData.Key] <- reqData
+			chanpoolLock.Unlock()
 		}
+
 	}
 }
